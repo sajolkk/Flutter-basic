@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -55,7 +57,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
+  var dateinput  = TextEditingController();
+  var seletedTime  = TextEditingController();
+  // @override
+  // void initState() {
+  //   dateinput.text = ""; //set the initial value of text field
+  //   super.initState();
+  // }
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -66,33 +74,99 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
 
     var time = DateTime.now();
-
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Container(
-          // height: 100,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Time: \n$time \nYear: ${ time.year} \nMonth: ${ time.month }  \nWeekday: ${ time.weekday }  \nHour: ${ time.hour }  \nMinute: ${ time.minute }  \nSecond: ${ time.second }"),
-              ElevatedButton(onPressed: (){
-                setState(() {
-
-                });
-              },child: Text('Current Time')),
-            ],
-          ),
+        appBar: AppBar(
+          // TRY THIS: Try changing the color here to a specific color (to
+          // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+          // change color while the other colors stay the same.
+          backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .inversePrimary,
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
         ),
-      )
+        body: Center(
+          child: Container(
+            // height: 100,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Time: \n$time \nYear: ${ time.year} \nMonth: ${ time
+                    .month }  \nWeekday: ${ time.weekday }  \nHour: ${ time
+                    .hour }  \nMinute: ${ time.minute }  \nSecond: ${ time
+                    .second }"),
+                Text("Time Format: ${ DateFormat('Hms').format(time) }"),
+                Text("Date Format: ${ DateFormat('yMMMMd').format(time) }"),
+                ElevatedButton(onPressed: () {
+                  setState(() {
+
+                  });
+                }, child: Text('Current Time')),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextField(
+                    controller: dateinput,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      hintText: 'Choose date',
+
+                    ),
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1998),
+                          lastDate: DateTime.now());
+                      if(pickedDate != null){
+                        print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
+                        String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                        print(formattedDate); //formatted date output using intl package =>  2021-03-16
+                        //you can implement different kind of Date Format here according to your requirement
+
+                        setState(() {
+                          dateinput.text = formattedDate; //set output date to TextField value.
+                        });
+                      }
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextField(
+                    controller: seletedTime,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      hintText: 'Choose time',
+
+                    ),
+                    onTap: () async {
+                      TimeOfDay? pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: TimeOfDay.now()
+                      );
+                      if(pickedTime != null){
+                        // print(pickedTime.format(context));   //output 10:51 PM
+                        // DateTime parsedTime = DateFormat.jm().parse(pickedTime.format(context).toString());
+                        //converting to DateTime so that we can further format on different pattern.
+                        // print(parsedTime); //output 1970-01-01 22:53:00.000
+                        // String formattedTime = DateFormat('HH:mm:ss').format(pickedTime.toString());
+                        // print(formattedTime); //output 14:59:00
+                        //DateFormat() is from intl package, you can format the time on any pattern you need.
+                        var strTime = pickedTime.hour.toString()+':'+pickedTime.minute.toString();
+                        setState(() {
+                          seletedTime.text = strTime; //set the value of text field.
+                        });
+
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
     );
   }
 }
