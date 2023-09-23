@@ -1,3 +1,5 @@
+import 'package:custom_widget/ui_helper/text_theme.dart';
+import 'package:custom_widget/widget/rounded_btn.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -86,6 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
             // call sub item widget
             SubItem(),
 
+            // buttons
+            Buttons(),
+
             // call bottom menu
             BottomMenu(),
           ],
@@ -155,12 +160,54 @@ class Contact extends StatelessWidget {
   }
 }
 
+// button
+class Buttons extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 1,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: RoundedButton(
+              btnName: 'Login',
+              btnIcon: Icon(
+                Icons.login,
+                color: Colors.white70,
+              ),
+              callback: () {
+                print('Login');
+              },
+              textStyle: mTextStyle2(
+                  textColor: Colors.white, fontWeight: FontWeight.w500),
+            ),
+          ),
+          RoundedButton(
+            btnName: 'Register',
+            btnIcon: Icon(
+              Icons.create,
+              color: Colors.white,
+            ),
+            textStyle: mTextStyle2(
+                textColor: Colors.white, fontWeight: FontWeight.w500),
+            callback: (){
+              print("Register");
+            },
+          ),
+
+        ],
+      ),
+    );
+  }
+}
+
 // sub item class
 class SubItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-        flex: 2,
+        flex: 1,
         child: Container(
           color: Colors.deepPurple,
           child: ListView.builder(
