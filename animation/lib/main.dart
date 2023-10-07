@@ -56,8 +56,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var _width = 200.0;
-  var _height = 200.0;
+  var _width = 100.0;
+  var _height = 100.0;
   bool trigger = true;
   Decoration myDeco = BoxDecoration(
     borderRadius: BorderRadius.circular(5),
@@ -67,6 +67,9 @@ class _MyHomePageState extends State<MyHomePage> {
   var myOpacity = 1.0;
   bool isVisible = true;
   String visibility = "Invisible";
+
+  bool isFirst = true;
+  String crossBtnText = "Image";
 
   @override
   Widget build(BuildContext context) {
@@ -106,16 +109,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     setState(() {
                       if (trigger) {
-                        _height = 300;
-                        _width = 150;
+                        _height = 200;
+                        _width = 50;
                         trigger = false;
                         myDeco = BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: Colors.deepPurple.shade400,
                         );
                       } else {
-                        _height = 200.0;
-                        _width = 200.0;
+                        _height = 100.0;
+                        _width = 100.0;
                         trigger = true;
                         myDeco = BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
@@ -133,25 +136,73 @@ class _MyHomePageState extends State<MyHomePage> {
                 curve: Curves.bounceInOut,
                 duration: Duration(seconds: 2),
                 child: Container(
-                  height: _height,
-                  width: _width,
+                  height: 100,
+                  width: 100,
                   decoration: myDeco,
                 ),
               ),
             ),
+            ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    if (isVisible) {
+                      myOpacity = 0.0;
+                      visibility = "Visible";
+                    } else {
+                      myOpacity = 1.0;
+                      visibility = "Invisible";
+                    }
+                    isVisible = !isVisible;
+                  });
+                },
+                child: Text(visibility)),
 
-            ElevatedButton(onPressed: (){
-              setState(() {
-                if(isVisible){
-                  myOpacity = 0.0;
-                  visibility = "Visible";
-                }else{
-                  myOpacity = 1.0;
-                  visibility = "Invisible";
-                }
-                isVisible = !isVisible;
-              });
-            }, child: Text(visibility)),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: AnimatedCrossFade(
+                  sizeCurve: Curves.slowMiddle,
+                  firstChild: Container(
+                    height: 150,
+                    width: 150,
+                    color: Colors.deepPurple,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          // child: Text("Hey, I'm Sajal and my sweet niece Payal.", style: TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w500),),
+                        ),
+                      ],
+                    ),
+                  ),
+                  secondChild: Column(
+                    children: [
+                      Image.asset('assets/images/payel.jpg',
+                        height: 200,
+                        width: 200,
+                      ),
+                      Text("Hey, I'm Sajal and my sweet niece Payal.", style: TextStyle(color: Colors.deepPurple, fontWeight: FontWeight.w700),),
+                    ],
+                  ),
+                  crossFadeState: isFirst? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                  duration: Duration(seconds: 2)),
+
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(onPressed: (){
+                setState(() {
+                  if(isFirst){
+                    crossBtnText = "Box";
+                  }else{
+                    crossBtnText = "Image";
+                  }
+                  isFirst = !isFirst;
+                });
+              }, child: Text(crossBtnText)),
+            ),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
