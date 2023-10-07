@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,6 +61,16 @@ class _MyHomePageState extends State<MyHomePage> {
   var email = TextEditingController();
   var phone = TextEditingController();
   var password = TextEditingController();
+
+  static const String KEYNAME = "name";
+
+  var showName = "Value Null";
+
+  @override
+  void initState() {
+    getName();
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -182,17 +193,40 @@ class _MyHomePageState extends State<MyHomePage> {
               
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
-                child: ElevatedButton(onPressed: (){
+                child: ElevatedButton(onPressed: () async {
                   String inputName = name.text.toString();
                   String inputPassword = password.text;
                   String inputEmail = email.text;
                   String inputPhone = phone.text;
                   print("Name: $inputName \nE-mail: $inputEmail \nPhone: $inputPhone \nPassword: $inputPassword");
+
+                  var prefers = await SharedPreferences.getInstance();
+                  prefers.setString(KEYNAME, inputName);
+
+                  setState(() {
+                    getName();
+                  });
                 }, child: Text('Register')),
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  child: Text(showName),
+                ),
               )
             ],
           )
       ))
     );
+  }
+
+  Future<void> getName() async {
+    var prefer = await SharedPreferences.getInstance();
+    var getName = prefer.getString(KEYNAME);
+
+    setState(() {
+      showName = getName ?? "Value Null!";
+    });
   }
 }
